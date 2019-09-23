@@ -19,9 +19,9 @@
  *
  * Return: Nothing
  */
-static void print_literals(struct literal *literals) {
+static void print_literals(literal_t *literals) {
 
-    struct literal *literal_ptr = NULL;
+    literal_t *literal_ptr = NULL;
 
     literal_ptr = literals;
 
@@ -39,9 +39,9 @@ static void print_literals(struct literal *literals) {
  *
  * Return: Nothing
  */
-static void print_clauses(struct clause *clauses) {
+static void print_clauses(clause_t *clauses) {
 
-    struct clause *clause_ptr = NULL;
+    clause_t *clause_ptr = NULL;
 
     clause_ptr = clauses;
 
@@ -56,7 +56,7 @@ static void print_clauses(struct clause *clauses) {
 /**
  * See cnf.h
  */
-void print_cnf(struct cnf *cnf) {
+void print_cnf(cnf_t *cnf) {
 
     printf("Number of variables = %d\n", cnf->number_of_vars);
     printf("Number of clauses   = %d\n", cnf->number_of_clauses);
@@ -72,13 +72,13 @@ void print_cnf(struct cnf *cnf) {
  *
  * Return: SUCCESS or FAILURE
  */
-int add_literal_to_clause(int literal, struct clause *clause) {
+int add_literal_to_clause(int literal, clause_t *clause) {
 
-    struct literal *literal_ptr;
+    literal_t *literal_ptr;
 
     if (clause->literals == NULL) {
 
-        clause->literals = calloc(1, sizeof(struct literal));
+        clause->literals = calloc(1, sizeof(literal_t));
         if (clause->literals == NULL) {
             printf("[ERROR] %s\n", strerror(errno));
             return FAILURE;
@@ -95,7 +95,7 @@ int add_literal_to_clause(int literal, struct clause *clause) {
     while (literal_ptr->next != NULL)
         literal_ptr = literal_ptr->next;
 
-    literal_ptr->next = calloc(1, sizeof(struct literal));
+    literal_ptr->next = calloc(1, sizeof(literal_t));
     if (literal_ptr->next == NULL) {
         printf("[ERROR] %s\n", strerror(errno));
         return FAILURE;
@@ -164,7 +164,7 @@ int is_correct_format(char *line) {
  *
  * Return: SUCCESS or FAILURE
  */
-static int set_clause_with_literals(char *line, struct clause *clause) {
+static int set_clause_with_literals(char *line, clause_t *clause) {
 
         int rc = 0;
         int literal = 1;
@@ -206,7 +206,7 @@ static int set_clause_with_literals(char *line, struct clause *clause) {
  *
  * Return: SUCCESS or FAILURE
  */
-static int get_clause_from_cnf(FILE *cnf_file, struct clause *clause) {
+static int get_clause_from_cnf(FILE *cnf_file, clause_t *clause) {
 
     int rc = 0;
     char *line = NULL;
@@ -254,9 +254,9 @@ static int get_clause_from_cnf(FILE *cnf_file, struct clause *clause) {
  *
  * Return: Nothing
  */
-void add_clause_to_cnf(struct clause *clause, struct cnf *cnf) {
+void add_clause_to_cnf(clause_t *clause, cnf_t *cnf) {
 
-    struct clause *ptr;
+    clause_t *ptr;
 
     if (cnf->clauses == NULL) {
         cnf->clauses = clause;
@@ -274,12 +274,12 @@ void add_clause_to_cnf(struct clause *clause, struct cnf *cnf) {
 /**
  * See cnf.h
  */
-int parse_cnf_file(char *filename, struct cnf *cnf) {
+int parse_cnf_file(char *filename, cnf_t *cnf) {
 
     int rc = 0;
     int index = 0;
     FILE *cnf_file = NULL;
-    struct clause *clause;
+    clause_t *clause;
 
     cnf_file = fopen(filename, "r");
     if (cnf_file == NULL) {
@@ -305,7 +305,7 @@ int parse_cnf_file(char *filename, struct cnf *cnf) {
          index < cnf->number_of_clauses;
          index++) {
 
-        clause = calloc(1, sizeof(struct clause));
+        clause = calloc(1, sizeof(clause_t));
         if (clause == NULL) {
             printf("[ERROR] %s\n", strerror(errno));
             return FAILURE;
